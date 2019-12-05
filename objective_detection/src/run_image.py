@@ -6,6 +6,7 @@ import cv2
 import numpy as np
 import multiprocessing
 from multiprocessing import Queue, Pool
+from io import BytesIO
 
 # tensorflow api 接口相关函数
 import tensorflow as tf
@@ -13,10 +14,10 @@ from object_detection.utils import label_map_util
 from object_detection.utils import visualization_utils as vis_util
 
 # 模型路径
-PATH_TO_CKPT = 'ssd_mobilenet_v1_coco_11_06_2017/frozen_inference_graph.pb'
+PATH_TO_CKPT = '../ssd_mobilenet_v1_coco_11_06_2017/frozen_inference_graph.pb'
 
 # label字典路径，用于识别出物品后展示类别名
-PATH_TO_LABELS = 'tensorflow_models/research/object_detection/data/mscoco_label_map.pbtxt'
+PATH_TO_LABELS = '../../tensorflow_models/research/object_detection/data/mscoco_label_map.pbtxt'
 NUM_CLASSES = 90  # 最大分类数量
 label_map = label_map_util.load_labelmap(PATH_TO_LABELS)  # 获得类别字典
 categories = label_map_util.convert_label_map_to_categories(
@@ -55,6 +56,11 @@ def detect_objects(image_np, sess, detection_graph):
         category_index,
         use_normalized_coordinates=True,
         line_thickness=3)
+
+    print('boxes=', np.squeeze(boxes))
+    print('classes=', np.squeeze(classes).astype(np.int32))
+    print('scores=', np.squeeze(scores))
+
     return image_np
 
 
@@ -69,7 +75,11 @@ def main(_):
         sess = tf.Session(graph=detection_graph)
 
         # read image
-        frame = cv2.imread('images/panda.jpg')
+        data = open('../images/panda.jpg', 'rb').read()
+        array = np.frombuffer(data, dtype='uint8')
+        frame = cv2.imdecode(array, 1)
+        # cv2.imshow("window", frame)
+
         frame = detect_objects(frame, sess, detection_graph)
 
         cv2.imshow('Video', frame)  # 展示已标记物体的图片
