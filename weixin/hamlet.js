@@ -1,4 +1,4 @@
-[
+module.exports.story = [
     {
         "content": "", 
         "image": "image/cover.png", 

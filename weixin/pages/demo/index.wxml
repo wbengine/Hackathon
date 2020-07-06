@@ -1,0 +1,26 @@
+<!-- welcome.wxml -->
+<view class="warp">
+    <image src="{{ bg_image }}" mode='scaleToFill'></image>
+    <text class="text1">{{ story_content }}</text>
+
+    <view wx:for="{{ story_answers }}" wx:key="idx" wx:for-item="itemName">
+      <text class='text2'
+            style='top: {{itemName.position_top}}; color: {{itemName.color}}'> {{itemName.answer}}
+      </text>
+    </view>
+
+    <button
+      bindtap='onRecord'
+      plain='true'
+      style="background-image: url( {{ button_record_bg }} ); display: {{ button_record_display }}"></button>
+
+    <button 
+      bindtap='onNext'
+      plain='true'
+      style="left:20%; background-image: url( {{ button_next_bg }} ); display: {{ button_next_display }}"></button>
+
+    <button 
+      bindtap='onReset'
+      plain='true'
+      style="left:80%; background-image: url( {{ button_reset_bg }} ); display: {{ button_reset_display }}"></button>
+</view>
